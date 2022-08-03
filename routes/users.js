@@ -25,62 +25,64 @@ router.get('/test', function(req, res, next) {
 
 router.post('/create', async(req, res, next)=> {
   let userRepository = new UserRepository(); 
-  let userservice = new UserService(userRepository,req,res);
-  const schema = {
-    name: 'string',
-    username: 'string|unique:Users',
-    email: 'string|email|optional',
-    password: 'string',
-    image: 'string|optional',
-  };
-  if(schema.image != null){
-    schema.image = 'string|image|max:1000|optional';
-    // upload 
-    const upload = require('../helper/upload');
-    const uploader = upload.single('image');
-    uploader(req, res, async(err)=> {
-      // console.log(req.body);
-      if(err){
-        console.log(err);
-        return res.status(500).json({
-          message: err.message
-        });
-      }
-      const image = req.file.filename;
-      const data = {
-        name: req.body.name,
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        image: image
-      };
-      const validate = v.validate(data, schema);
-      if(validate){
-        let user = await userservice.createUser(data);
-        return res.status(200).json(user);
-      }else{
-        return res.status(400).json(responseJson(false, 'Validation error', validate));
-      }
-    },
-    );
-}
-else{
-  const data = {
-    name: req.body.name,
-    username: req.body.username,
-    email: req.body.email,
-    password: req.body.password,
-  };
-  const validate = v.validate(data, schema);
-  if(validate){
-    let user = await userservice.createUser(data);
-    if(user){
-      return res.status(200).json(responseJson(true, 'User Successfully Created'));
-    }
-  }else{
-    return res.status(400).json(responseJson(false, 'Validation error', validate));
-  }
-}
+  let userservice = new UserService(userRepository);
+  let createUser = await userservice.createUser(req,res,next);
+  return createUser;
+//   const schema = {
+//     name: 'string',
+//     username: 'string|unique:Users',
+//     email: 'string|email|optional',
+//     password: 'string',
+//     image: 'string|optional',
+//   };
+//   if(schema.image != null){
+//     schema.image = 'string|image|max:1000|optional';
+//     // upload 
+//     const upload = require('../helper/upload');
+//     const uploader = upload.single('image');
+//     uploader(req, res, async(err)=> {
+//       // console.log(req.body);
+//       if(err){
+//         console.log(err);
+//         return res.status(500).json({
+//           message: err.message
+//         });
+//       }
+//       const image = req.file.filename;
+//       const data = {
+//         name: req.body.name,
+//         username: req.body.username,
+//         email: req.body.email,
+//         password: req.body.password,
+//         image: image
+//       };
+//       const validate = v.validate(data, schema);
+//       if(validate){
+//         let user = await userservice.createUser(data);
+//         return res.status(200).json(user);
+//       }else{
+//         return res.status(400).json(responseJson(false, 'Validation error', validate));
+//       }
+//     },
+//     );
+// }
+// else{
+//   const data = {
+//     name: req.body.name,
+//     username: req.body.username,
+//     email: req.body.email,
+//     password: req.body.password,
+//   };
+//   const validate = v.validate(data, schema);
+//   if(validate){
+//     let user = await userservice.createUser(data);
+//     if(user){
+//       return res.status(200).json(responseJson(true, 'User Successfully Created'));
+//     }
+//   }else{
+//     return res.status(400).json(responseJson(false, 'Validation error', validate));
+//   }
+// }
 }
 );
 // get user by id

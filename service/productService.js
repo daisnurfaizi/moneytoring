@@ -1,6 +1,7 @@
 const product = require('../repository/productRepository');
 const upload = require('../helper/upload');
 const Product = require('../models');
+const responseJson = require('../helper/responseJsonHelper');
 
 
 class productService{
@@ -68,7 +69,7 @@ class productService{
                     });
                 }
                 await transaction.commit();
-                return res.status(200).json(create);
+                return res.status(200).json(responseJson('success', 'Update Product Hass Success..'));
             } catch(err){
                 await transaction.rollback();
                 return res.status(500).json({
@@ -102,7 +103,7 @@ class productService{
                     });
                 }
                 await transaction.commit();
-                return res.status(200).json(update);
+                return res.status(200).json(responseJson('success', 'Update Product Hass Success..'));
             }
             catch(err){
                 await transaction.rollback();
