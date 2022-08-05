@@ -3,6 +3,8 @@ let router = express.Router();
 const Validator = require('fastest-validator');
 const response = require('../helper/responseJsonHelper');
 const responseJson = require('../helper/responseJsonHelper');
+const url = require('url');
+const querystring = require('querystring');
 const upload = require('../helper/upload');
 const db = require('../models');
 const Products = require('../models');
@@ -32,8 +34,9 @@ router.get('/products', async(req, res, next)=> {
     // return res.send("coba");
     let productRepo = new productRepository();
     let productServices = new productService(productRepo);
-    let getProduct = await productServices.getProducts();
-    return res.status(200).json(responseJson.success('201','success',getProduct));
+    let getProducts = await productServices.getProducts(req,res,next);
+    console.log(getProducts);
+    return getProducts;
 });
 router.get('/product/:idProduct', async(req, res, next)=> {
     // console.log(req.body);
@@ -41,6 +44,18 @@ router.get('/product/:idProduct', async(req, res, next)=> {
     let productRepo = new productRepository();
     let productServices = new productService(productRepo);
     let getProduct = await productServices.getProduct(req.params.idProduct);
+    if(getProduct){
+        return res.status(200).json(responseJson(201,'success',getProduct));
+    }
+    return res.status(404).json(responseJson(404,'not found',getProduct));
+});
+router.get('/products/user/', async(req, res, next)=> {
+    
+// return res.status(200).json(responseJson('201','success',req.query.userId));
+
+    let productRepo = new productRepository();
+    let productServices = new productService(productRepo);
+    let getProduct = await productServices.getAllProductsByUserId(req.query.userId);
     if(getProduct){
         return res.status(200).json(responseJson(201,'success',getProduct));
     }

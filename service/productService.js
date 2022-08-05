@@ -25,7 +25,7 @@ class productService{
         }
         return null;
     }
-    async getProducts(){
+    async getProducts(req,res,next){
         // random array
         let products =  this.productRepository.getProducts();
         const productData = products.map(product => {
@@ -41,7 +41,7 @@ class productService{
             }
         }
         );
-    return productData;
+    return res.status(200).json(productData);
 }
     async createProduct(req,res,next){
         // console.log(product);
@@ -139,6 +139,10 @@ class productService{
 
     getProducts(){
         return this.productRepository.getProduct();
+    }
+
+    getAllProductsByUserId(id){
+        return this.productRepository.getAllProductsByUserId(id);
     }
 }
 

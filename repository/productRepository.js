@@ -13,7 +13,8 @@ class productRepository{
 
     async getProducts(){
         // find where
-        return await this.db.Products.findAll();
+        const product = await this.db.Products.findAll();
+        return JSON.stringify(product);
     }
 
     async createProduct(product){
@@ -73,6 +74,14 @@ class productRepository{
         return await this.db.Products.destroy({
             where: {
                 id: id
+            }
+        });
+    }
+
+    async getAllProductByUserId(id){
+        return await this.db.Products.findAll({
+            where: {
+                user_id: id
             }
         });
     }
