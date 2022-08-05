@@ -7,6 +7,10 @@ const db = require('../models');
 const Users = require('../models');
 const UserService  = require('../service/userService');
 const UserRepository = require('../repository/userRepository');
+const UserController = require('../Controller/UserController');
+const verifyToken = require('../middleware/VerifyToken');
+const refreshToken  = require('../Controller/RefreshToken');
+
 
 
 
@@ -14,9 +18,10 @@ const v = new Validator();
 
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/', verifyToken,UserController.getUser);
+router.post('/login',UserController.Login);
+router.get('/token',refreshToken)
+router.delete('/logout',verifyToken,UserController.Logout);
 
 router.get('/test', function(req, res, next) {
   res.send(process.env.Host);

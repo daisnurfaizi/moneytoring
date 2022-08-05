@@ -7,6 +7,34 @@ class userRepository {
     async getUser(id) {
         return await this.db.query('SELECT * FROM users WHERE id = ?', [id]);
     }
+
+    async getUserByUsername(username) {
+        return await this.db.Users.findAll({
+            where: {
+                username: username,
+                
+            }
+        });
+    }
+    async updateRefreshToken(refreshToken, id) {
+        return await this.db.Users.update({
+            refreshToken: refreshToken
+        }, {
+            where: {
+                id: id
+            }
+        });
+    }
+
+    async deleteRefreshToken(id) {
+        return await this.db.Users.update({
+            refreshToken: null
+        }, {
+            where: {
+                id: id
+            }
+        });
+    }
     async getUsers() {
         return await this.db.query('SELECT * FROM users');
     }

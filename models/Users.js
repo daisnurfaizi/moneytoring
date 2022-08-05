@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
             password: {
                 type: DataTypes.STRING
             },
+            refreshToken: {
+                type: DataTypes.TEXT,
+                allowNull: true
+            },
             createdAt: {
                 allowNull: false,
                 type: DataTypes.DATE
@@ -49,6 +53,7 @@ module.exports = (sequelize, DataTypes) => {
                 }
             },
             tableName: 'Users',
+            frezzeTableName: true
         },
     );    
     return Users;
