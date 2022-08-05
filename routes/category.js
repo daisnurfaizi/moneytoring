@@ -17,8 +17,8 @@ router.post('/create', async(req, res, next)=> {
     if(schema.icon != null){
         schema.icon = 'string|image|max:10000|optional';
         // upload 
-        const upload = require('../helper/upload');
-        const uploader = upload.single('icon');
+        // const upload = require('../helper/upload');
+        const uploader = upload.categoryPict.single('icon');
         uploader(req, res, async(err)=> {
             if(err){
                 console.log(err);

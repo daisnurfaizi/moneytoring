@@ -10,17 +10,13 @@ const db = require('../models');
 const Products = require('../models');
 const productRepository = require('../repository/productRepository');
 const productService = require('../service/productService');
+const verifyToken = require('../middleware/VerifyToken');
+const  Product  = require('../Controller/ProductController');
 const validate = new Validator();
 
-router.post('/create', async(req, res, next)=> {
-    // console.log(req.body);
-    let productRepo = new productRepository();
-    let productServices = new productService(productRepo);
-    let createNewProduct = await productServices.createProduct(req,res,next);
-    return createNewProduct;
 
-});
-
+router.post('/create',verifyToken,Product.CreateProduct);
+router.get('/getAllProduct',verifyToken,Product.getAllProduct);
 router.put('/update/:idProduct', async(req, res, next)=> {
     // console.log(req.body);
     let productRepo = new productRepository();

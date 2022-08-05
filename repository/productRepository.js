@@ -79,6 +79,7 @@ class productRepository{
     }
 
     async getAllProductByUserId(id){
+        // join with category
         return await this.db.Products.findAll({
             where: {
                 user_id: id

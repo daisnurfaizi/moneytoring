@@ -1,4 +1,4 @@
-const product = require('../repository/productRepository');
+// const product = require('../repository/productRepository');
 const upload = require('../helper/upload');
 const Product = require('../models');
 const responseJson = require('../helper/responseJsonHelper');
@@ -43,9 +43,9 @@ class productService{
         );
     return res.status(200).json(productData);
 }
-    async createProduct(req,res,next){
+    async createProduct(req,res){
         // console.log(product);
-        const uploader = upload.single('image');
+        const uploader = upload.productPict.single('image');
         uploader(req, res, async(err)=> {
             
             const image = req.file.filename;
@@ -141,8 +141,29 @@ class productService{
         return this.productRepository.getProduct();
     }
 
-    getAllProductsByUserId(id){
-        return this.productRepository.getAllProductsByUserId(id);
+    
+   async getAllProductsByUserId(req,res){
+        // return res.status(200).json(responseJson('success', 'sasa',req.params.id));
+        const data = await this.productRepository.getAllProductByUserId(req.query.id);
+        if(data){
+            console.log(data);
+            const productData = data.map(product => {
+                return {
+                    id: product.id,
+                    user_id: product.user_id,
+                    category_id: product.category_id,
+                    product_name: product.product_name,
+                    image: process.env.Host+"/images/productpict/"+product.image,
+                    buying_price: product.buying_price,
+                    selling_price: product.selling_price,
+                    stock: product.stock,
+                }
+            }
+            );
+            return res.status(200).json(productData);
+        }
+        
+        return res.status(200).json(data);
     }
 }
 

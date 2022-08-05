@@ -48,7 +48,7 @@ const getUser = async(req,res)=>{
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000
         });
-        return res.status(200).json(responseJson(201, 'User Found',data));
+        return res.status(200).json(responseJson(201, 'success',data));
     }catch(exception){
         return res.json({message:exception});
     }
