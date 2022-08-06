@@ -13,7 +13,7 @@ module.exports = {
 
   "development": {
     "Host": Host,
-    "PORT": Port,
+    "Port": Port,
     "username": DBUsername,
     "password": DBPassword,
     "database": DBName,
@@ -22,7 +22,7 @@ module.exports = {
   },
   "test": {
     "Host": Host,
-    "PORT": Port,
+    "Port": Port,
     "username": DBUsername,
     "password": DBPassword,
     "database": DBName,
