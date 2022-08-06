@@ -86,6 +86,7 @@ class productRepository{
             }
         });
     }
+    
 }
 
 module.exports = productRepository;

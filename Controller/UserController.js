@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userRepository = require('../repository/userRepository');
 const responseJson = require('../helper/responseJsonHelper');
+const userService = require('../service/userService');
 const getUser = async(req,res)=>{
     try{
         let UserRepository = new userRepository();
@@ -11,6 +12,12 @@ const getUser = async(req,res)=>{
     } catch(err){
         return res.json({message:err});
     }
+}
+const Resgister = async(req,res)=>{
+    let UserRepository = new userRepository();
+    let UserService = new userService(UserRepository);
+    let Register = await UserService.Registeruser(req,res);
+    return Register;
 }
 
  const Login = async(req,res)=>{
@@ -69,6 +76,7 @@ const Logout = async(req,res)=>{
 }
 
 module.exports = {
+    Resgister,  
     getUser,
     Login,
     Logout

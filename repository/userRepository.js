@@ -16,6 +16,19 @@ class userRepository {
             }
         });
     }
+
+    async updateProfile(userDataBody, res) {
+        return await this.db.Users.update({
+            name: userDataBody.name,
+            email: userDataBody.email,
+            password: userDataBody.password,
+            image: userDataBody.image,
+        }, {
+            where: {
+                username: userDataBody.username
+            }
+        });
+    }
     async updateRefreshToken(refreshToken, id) {
         return await this.db.Users.update({
             refreshToken: refreshToken
@@ -40,12 +53,7 @@ class userRepository {
     }
    async createUser(user) {
             const create = await this.db.Users.create(user);
-            if(create){
-                return create;
-            }
-            else{
-                return false;
-            }
+            return create;
     }
     async updateUser(user) {
         return await this.db.query('UPDATE users SET ? WHERE id = ?', [user, user.id]);
