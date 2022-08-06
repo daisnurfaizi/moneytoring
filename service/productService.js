@@ -2,11 +2,14 @@
 const upload = require('../helper/upload');
 const Product = require('../models');
 const responseJson = require('../helper/responseJsonHelper');
+const UserRepo = require('../repository/userRepository');
 
 
 class productService{
     constructor(producRepository){
         this.productRepository = producRepository;
+        this.user = new UserRepo();
+
     }
     async getProduct(id){
         let products = await this.productRepository.getProduct(id);
@@ -80,12 +83,12 @@ class productService{
             });
             return uploader;
     }
-    async updateProduct(req,res,next){
-        const uploader = upload.single('image');
+    async updateProduct(req,res){
+        const uploader = upload.upload.single('image');
         uploader(req, res, async(err)=> {
             const image = req.file.filename;
             const productDataBody = {
-                user_id: req.body.userId,
+                id: req.body.product_id,
                 category_id: req.body.category_id,
                 product_name: req.body.product_name,
                 image: image,
@@ -95,7 +98,7 @@ class productService{
             }
             let transaction = await Product.sequelize.transaction();
             try{
-                const update = await this.productRepository.updateProduct(productDataBody,req.params.idProduct, transaction);
+                const update = await this.productRepository.updateProduct(productDataBody, transaction);
                 if(err){
                     console.log(err);
                     return res.status(500).json({
@@ -143,16 +146,16 @@ class productService{
 
     
    async getAllProductsByUserId(req,res){
-        // return res.status(200).json(responseJson('success', 'sasa',req.params.id));
-        const data = await this.productRepository.getAllProductByUserId(req.query.id);
+        
+        let userData = await this.user.getUserByUsername(req.username);
+        const data = await this.productRepository.getAllProductByUserId(userData[0].id);
         if(data){
             console.log(data);
             const productData = data.map(product => {
                 return {
                     id: product.id,
-                    user_id: product.user_id,
-                    category_id: product.category_id,
                     product_name: product.product_name,
+                    category_name: product.category_name,
                     image: process.env.Host+"/images/productpict/"+product.image,
                     buying_price: product.buying_price,
                     selling_price: product.selling_price,
@@ -160,11 +163,58 @@ class productService{
                 }
             }
             );
-            return res.status(200).json(productData);
+            return res.status(200).json(responseJson('success', 'Get All Product By User Id Success..', productData));
         }
         
         return res.status(200).json(data);
     }
+
+    async SearchProduct(req,res){
+        let userData = await this.user.getUserByUsername(req.username);
+        const data = await this.productRepository.SearchProduct(req.query.search, userData[0].id);
+        if(data){
+            console.log(data);
+            const productData = data.map(product => {
+                return {
+                    id: product.id,
+                    product_name: product.product_name,
+                    category_name: product.category_name,
+                    image: process.env.Host+"/images/productpict/"+product.image,
+                    buying_price: product.buying_price,
+                    selling_price: product.selling_price,
+                    stock: product.stock,
+                }
+            }
+            );
+            return res.status(200).json(responseJson('success', 'Get All Product By User Id Success..', productData));
+        }
+        
+        return res.status(200).json(data);
+    }
+    async updateStatus (req,res){
+        let transaction = await Product.sequelize.transaction();
+        try{
+            let checkstatus = await this.productRepository.checkStatusActive(req.query.product); 
+            console.log(checkstatus);
+            if(checkstatus){
+                await this.productRepository.nonActiveProduct(req.query.product, transaction);
+                await transaction.commit();
+                return res.status(200).json(responseJson('success', 'Product Non Active Success..'));
+            }
+            else{
+                await this.productRepository.activeProduct(req.query.product, transaction);
+                await transaction.commit();
+                return res.status(200).json(responseJson('success', 'Product Active Success..'));
+            }      
+         }
+        catch(err){
+            await transaction.rollback();
+            return res.status(500).json({
+                message: err.message
+            });
+        }
+    }
+    
 }
 
 module.exports = productService;

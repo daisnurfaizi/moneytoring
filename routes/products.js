@@ -17,13 +17,9 @@ const validate = new Validator();
 
 router.post('/create',verifyToken,Product.CreateProduct);
 router.get('/getAllProduct',verifyToken,Product.getAllProduct);
-router.put('/update/:idProduct', async(req, res, next)=> {
-    // console.log(req.body);
-    let productRepo = new productRepository();
-    let productServices = new productService(productRepo);
-    let updateProduct = await productServices.updateProduct(req,res,next);
-    return updateProduct;
-});
+router.get('/Search',verifyToken,Product.Search);
+router.put('/update', verifyToken,Product.updateProduct);
+router.put('/updateStatus', verifyToken,Product.UpdateStatus);
 
 router.get('/products', async(req, res, next)=> {
     // console.log(req.body);

@@ -12,7 +12,8 @@ const response = (status = 200,message='',data=[]) => {
     else{
         return {
             status: status,
-            message: message
+            message: message,
+            data: data
         };
     }
 }
