@@ -24,7 +24,7 @@ class userService {
                     name: user.name,
                     username: user.username,
                     email: user.email,
-                    image: process.env.Host+"/images/profilepict/"+user.image,
+                    image: process.env.Host+":"+process.env.Port+"/images/profilepict/"+user.image,
                 }
             });
             return res.status(200).json(responseJson('success', 'User Found', profileData));

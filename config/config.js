@@ -3,7 +3,7 @@ require('dotenv').config();
 const{
 DBHost,
 Host,
-PORT,
+Port,
 DBUsername,
 DBPassword,
 DBName,
@@ -13,7 +13,7 @@ module.exports = {
 
   "development": {
     "Host": Host,
-    "PORT": PORT,
+    "PORT": Port,
     "username": DBUsername,
     "password": DBPassword,
     "database": DBName,
@@ -22,7 +22,7 @@ module.exports = {
   },
   "test": {
     "Host": Host,
-    "PORT": PORT,
+    "PORT": Port,
     "username": DBUsername,
     "password": DBPassword,
     "database": DBName,
@@ -31,7 +31,7 @@ module.exports = {
   },
   "production": {
     "Host": Host,
-    "PORT": PORT,
+    "Port": Port,
     "username": DBUsername,
     "password": DBPassword,
     "database": DBName,
