@@ -23,9 +23,9 @@ router.get('/', verifyToken,UserController.getUser);
 router.post('/login',UserController.Login);
 router.get('/token',refreshToken)
 router.delete('/logout',verifyToken,UserController.Logout);
-router.post('/Register',UserController.Resgister);
-router.get('/Profile',verifyToken,ProfileUser.ProfileUser)
-router.post('/ProfileUpdate',verifyToken,ProfileUser.ProfileUpdate)
+router.post('/register',UserController.Resgister);
+router.get('/profile',verifyToken,ProfileUser.ProfileUser)
+router.post('/profileupdate',verifyToken,ProfileUser.ProfileUpdate)
 
 router.get('/test', function(req, res, next) {
   res.send(process.env.Host);

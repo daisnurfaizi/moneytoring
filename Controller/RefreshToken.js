@@ -18,11 +18,8 @@ const refreshToken = async(req,res)=>{
         const email = user[0].email;
         const image = user[0].image;
         const accessToken = jwt.sign({userID,name,username,email,image},process.env.ACCESS_TOKEN_SECRET,
-        {
-            expiresIn:'1h'
-        });
-        res.cookie('accessToken',accessToken,{httpOnly:true,
-            maxAge:25 * 60 * 1000});
+        );
+        res.cookie('accessToken',accessToken,{httpOnly:true});
        return res.json({accessToken});
     }
     catch(err){
