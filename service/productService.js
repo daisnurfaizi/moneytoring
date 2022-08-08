@@ -44,7 +44,7 @@ class productService{
             }
         }
         );
-    return res.status(200).json(productData);
+    return res.status(200).json(responseJson.response('success', 'Get All Product Success..', productData));
 }
     async createProduct(req,res){
         // console.log(product);
@@ -72,7 +72,7 @@ class productService{
                     });
                 }
                 await transaction.commit();
-                return res.status(200).json(responseJson('success', 'Update Product Hass Success..'));
+                return res.status(200).json(responseJson.response('success', 'Update Product Hass Success..'));
             } catch(err){
                 await transaction.rollback();
                 return res.status(500).json({
@@ -106,7 +106,7 @@ class productService{
                     });
                 }
                 await transaction.commit();
-                return res.status(200).json(responseJson('success', 'Update Product Hass Success..'));
+                return res.status(200).json(responseJson.response('success', 'Update Product Hass Success..'));
             }
             catch(err){
                 await transaction.rollback();
@@ -163,7 +163,7 @@ class productService{
                 }
             }
             );
-            return res.status(200).json(responseJson('success', 'Get All Product By User Id Success..', productData));
+            return res.status(200).json(responseJson.response('success', 'Get All Product By User Id Success..', productData));
         }
         
         return res.status(200).json(data);
@@ -186,7 +186,7 @@ class productService{
                 }
             }
             );
-            return res.status(200).json(responseJson('success', 'Get All Product By User Id Success..', productData));
+            return res.status(200).json(responseJson.response('success', 'Get All Product By User Id Success..', productData));
         }
         
         return res.status(200).json(data);
@@ -195,16 +195,16 @@ class productService{
         let transaction = await Product.sequelize.transaction();
         try{
             let checkstatus = await this.productRepository.checkStatusActive(req.query.product); 
-            console.log(checkstatus);
+            // console.log(checkstatus);
             if(checkstatus){
                 await this.productRepository.nonActiveProduct(req.query.product, transaction);
                 await transaction.commit();
-                return res.status(200).json(responseJson('success', 'Product Non Active Success..'));
+                return res.status(200).json(responseJson.response('success', 'Product Non Active Success..'));
             }
             else{
                 await this.productRepository.activeProduct(req.query.product, transaction);
                 await transaction.commit();
-                return res.status(200).json(responseJson('success', 'Product Active Success..'));
+                return res.status(200).json(responseJson.response('success', 'Product Active Success..'));
             }      
          }
         catch(err){

@@ -28,10 +28,10 @@ class userService {
                 }
 
             });
-            return res.status(200).json(responseJson('success', 'User Found', profileData));
+            return res.status(200).json(responseJson.response('success', 'User Found', profileData));
         }
         else{
-            return res.status(404).json(responseJson(404, 'User Not Found'));
+            return res.status(404).json(responseJson.responseFail(404, 'User Not Found'));
         }   
     }
 
@@ -48,14 +48,17 @@ class userService {
                 image: image,
             }
             let transaction = await User.sequelize.transaction();
-            let user = await this.userRepository.updateProfile(userDataBody, transaction);
-            if(user){
-                await transaction.commit();
-                return res.status(200).json(responseJson('success', 'User Successfully Updated'));
-            }
-            else{
+            try{
+                
+                let user = await this.userRepository.updateProfile(userDataBody, transaction);
+                if(user){
+                    await transaction.commit();
+                    return res.status(200).json(responseJson.response('success', 'User Successfully Updated'));
+                }
+                
+            }catch(err){
                 await transaction.rollback();
-                return res.status(400).json(responseJson('error', 'User Failed to Updates'));
+                return res.status(500).json(responseJson.responseFail('error', 'Something went wrong', err));
             }
         }
         ); 
@@ -79,15 +82,15 @@ class userService {
                 let transaction = await User.sequelize.transaction();
                 let user = await this.userRepository.createUser(userDataBody, transaction);
                 if(user){
-                    return res.status(200).json(responseJson('success', 'User Successfully Created'));
+                    return res.status(200).json(responseJson.response('success', 'User Successfully Created'));
                 }
                 else{
-                    return res.status(400).json(responseJson('error', 'User Failed to Create'));
+                    return res.status(400).json(responseJson.responseFail('error','User Already Exist'));
                 }
             }   
             catch(err)
             {
-                return res.status(500).json(responseJson('error', 'Something went wrong'));
+                return res.status(500).json(responseJson.responseFail('error', 'Something went wrong'));
             }
         }
         ); 
@@ -105,15 +108,17 @@ class userService {
                 image: image,
             }
             let transaction = await User.sequelize.transaction();
-            let user = await this.userRepository.createUser(userDataBody, transaction);
-            if(user){
-                await transaction.commit();
-                return res.status(200).json(responseJson('success', 'User Successfully Created'));
-            }
-            else{
+            try{
+                let user = await this.userRepository.createUser(userDataBody, transaction);
+                if(user){
+                    await transaction.commit();
+                    return res.status(200).json(responseJson.response('success', 'User Successfully Created'));
+                }
+            }catch(err){
                 await transaction.rollback();
-                return res.status(400).json(responseJson('error', 'User Failed to Create'));
+                return res.status(500).json(responseJson.responseFail('error', 'Something went wrong', err));
             }
+            
         }
         ); 
         return uploader;

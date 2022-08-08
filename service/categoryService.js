@@ -33,11 +33,11 @@ class categoryService{
                 try{
                     const category = await this.categoryRepository.createNewCategory(data, transaction);
                     await transaction.commit();
-                    return res.status(200).json(responseJson(200, 'Success',category));
+                    return res.status(200).json(responseJson.response(200, 'Success',category));
                 }
                 catch(err){
                     await transaction.rollback();
-                    return res.status(500).json(responseJson(500, err,));
+                    return res.status(500).json(responseJson.responseFail(500, err,));
                 }
             }
         );
@@ -65,11 +65,11 @@ class categoryService{
             try{
                 const category = await this.categoryRepository.updateCategory(data, transaction);
                 await transaction.commit();
-                return res.status(200).json(responseJson(200, 'Success Update',));
+                return res.status(200).json(responseJson.response(200, 'Success Update',));
             }
             catch(err){
                 await transaction.rollback();
-                return res.status(500).json(responseJson(500, err,));
+                return res.status(500).json(responseJson.response(500, err,));
             }
         }
         );
@@ -89,7 +89,7 @@ class categoryService{
                 icon: process.env.Host+"/images/categorypict/"+category.icon,
             }
         });
-        return res.status(200).json(responseJson(200, 'Success',dataCategory));
+        return res.status(200).json(responseJson.response(200, 'Success',dataCategory));
         // return res.status(200).json(responseJson(200, 'Success',categories));
     }
 
@@ -103,7 +103,7 @@ class categoryService{
                 icon: process.env.Host+"/images/categorypict/"+category.icon,
             }
         });
-        return res.status(200).json(responseJson(200, 'Success',dataCategory));
+        return res.status(200).json(responseJson.response(200, 'Success',dataCategory));
     }
 
     async deleteCategory(req, res){
@@ -111,11 +111,11 @@ class categoryService{
         try{
             const category = await this.categoryRepository.DeleteCategory(req.query.category_id, transaction);
             await transaction.commit();
-            return res.status(200).json(responseJson(200, 'Success Delete Category',));
+            return res.status(200).json(responseJson.response(200, 'Success Delete Category',));
         }
         catch(err){
             await transaction.rollback();
-            return res.status(500).json(responseJson(500, err,));
+            return res.status(500).json(responseJson.response(500, err,));
         }
     }
 }
