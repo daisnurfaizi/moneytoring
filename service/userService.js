@@ -2,7 +2,7 @@ const User = require('../models');
 const upload = require('../helper/upload');
 const responseJson = require('../helper/responseJsonHelper');
 const bcrypt = require('bcrypt');
-
+const Joi = require('joi');
 class userService {
     constructor(userRepository) {
         this.userRepository = userRepository;
@@ -39,6 +39,16 @@ class userService {
 
         const uploader = upload.upload.single('image');
         uploader(req, res, async(err)=> {
+            const schema = Joi.object({
+                name: Joi.string().required(),
+                // username: Joi.string().required(),
+                password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
+                email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+            });
+            const validation = schema.validate(req.body);
+            if (validation.error) {
+                return res.status(400).json(responseJson.responseFail('error', validation.error.details[0].message, validation.error.details[0].message));
+            }
             const image = req.file.filename;
             const userDataBody = {
                 name: req.body.name,
@@ -47,6 +57,7 @@ class userService {
                 password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10),null),
                 image: image,
             }
+            
             let transaction = await User.sequelize.transaction();
             try{
                 
@@ -67,8 +78,21 @@ class userService {
 
 
     async Registeruser(req,res) {
+
         const uploader = upload.upload.single('image');
         uploader(req, res, async(err)=> {
+
+            const schema = Joi.object({
+                name: Joi.string().min(3).max(8).required(),
+                username: Joi.string().required(),
+                password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
+                email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+            });
+            const validation = schema.validate(req.body);
+            if (validation.error) {
+                return res.status(400).json(responseJson.responseFail('error', validation.error.details[0].message));
+            }
+            
             const image = req.file.filename;
             const userDataBody = {
                 name: req.body.name,
@@ -90,7 +114,7 @@ class userService {
             }   
             catch(err)
             {
-                return res.status(500).json(responseJson.responseFail('error', 'Something went wrong'));
+                return res.status(500).json(responseJson.responseFail('error', 'Something went wrong',err));
             }
         }
         ); 

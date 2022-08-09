@@ -11,6 +11,7 @@ const UserController = require('../Controller/UserController');
 const verifyToken = require('../middleware/VerifyToken');
 const refreshToken  = require('../Controller/RefreshToken');
 const ProfileUser = require('../Controller/ProfileController');
+const Validate = require('../middleware/ValidateRegister');
 
 
 
