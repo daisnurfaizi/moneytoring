@@ -3,6 +3,8 @@ const upload = require('../helper/upload');
 const Product = require('../models');
 const responseJson = require('../helper/responseJsonHelper');
 const UserRepo = require('../repository/userRepository');
+const Joi = require('joi');
+const joiboy = require('joi');
 
 
 class productService{
@@ -50,7 +52,19 @@ class productService{
         // console.log(product);
         const uploader = upload.productPict.single('image');
         uploader(req, res, async(err)=> {
-            
+            const productShema = Joi.object({
+                userId : Joi.number().required(),
+                category_id : Joi.number().required(),
+                product_name : Joi.string().required(),
+                buying_price : Joi.number().required(),
+                selling_price : Joi.number().required(),
+                stock : Joi.number().required(),
+            });
+            const Validation = productShema.validate(req.body);
+            if(Validation.error){
+                return res.status(400).json(responseJson.responseFail('error', Validation.error.details[0].message));
+            }
+            // await  this.ValidationProduct(req,res);
             const image = req.file.filename;
             const productDataBody = {
                 user_id: req.body.userId,
@@ -86,6 +100,19 @@ class productService{
     async updateProduct(req,res){
         const uploader = upload.upload.single('image');
         uploader(req, res, async(err)=> {
+            const productShema = Joi.object({
+                userId : Joi.number().required(),
+                category_id : Joi.number().required(),
+                product_name : Joi.string().required(),
+                buying_price : Joi.number().required(),
+                selling_price : Joi.number().required(),
+                stock : Joi.number().required(),
+            });
+            const Validation = productShema.validate(req.body);
+            if(Validation.error){
+                return res.status(400).json(responseJson.responseFail('error', Validation.error.details[0].message));
+            }
+        //    await this.ValidationProduct(req.body,res);
             const image = req.file.filename;
             const productDataBody = {
                 id: req.body.product_id,
@@ -214,6 +241,22 @@ class productService{
             });
         }
     }
+
+    ValidationProduct(req){
+        const productShema = Joi.object({
+            userId : Joi.number().required(),
+            category_id : Joi.number().required(),
+            product_name : Joi.string().required(),
+            buying_price : Joi.number().required(),
+            selling_price : Joi.number().required(),
+            stock : Joi.number().required(),
+        })
+        const Validation = productShema.validate(req.body);
+        if(Validation.error){
+            return responseFail('error', Validation.error.details[0].message);
+        }
+    }
+
     
 }
 

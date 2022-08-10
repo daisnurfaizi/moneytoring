@@ -1,8 +1,6 @@
 const productRepository = require("../repository/productRepository");
 const productService = require("../service/productService");
-
 const CreateProduct = async (req, res) => {
-
     let productRepo = new productRepository();
     let productServices = new productService(productRepo);
     let createNewProduct = await productServices.createProduct(req,res);
