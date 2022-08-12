@@ -37,13 +37,14 @@ class userService {
 
     async ProfileUpdate(req,res) {
 
+        // check if email is already exist
         const uploader = upload.upload.single('image');
         uploader(req, res, async(err)=> {
             const schema = Joi.object({
                 name: Joi.string().required(),
                 // username: Joi.string().required(),
                 password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
-                email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+                email: Joi.string().email(),
             });
             const validation = schema.validate(req.body);
             if (validation.error) {
@@ -83,8 +84,8 @@ class userService {
         uploader(req, res, async(err)=> {
 
             const schema = Joi.object({
-                name: Joi.string().min(3).max(8).required(),
-                username: Joi.string().required(),
+                name: Joi.string().required(),
+                username: Joi.string().min(3).max(8).required(),
                 password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
                 email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
             });

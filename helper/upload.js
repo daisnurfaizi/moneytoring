@@ -10,13 +10,7 @@ const storage = multer.diskStorage({
         const ext = file.originalname.split('.').pop();        
         cb(null, Date.now()+'.'+ext)
     },
-    fileFilter: function (req, file, cb) {
-        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-            cb(null, true);
-        } else {
-            cb(new Error('Only jpg/png allowed!'), false);
-        }
-    }
+       
 }
 );
 
