@@ -10,8 +10,19 @@ var categoryRouter = require('./routes/category');
 var productRouter = require('./routes/products');
 var cors = require('cors');
 var app = express();
+const swaggerUi = require('swagger-ui-express')
+,swaggerDocument = require('./swagger.json');
+app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument)
+)
 app.use(logger('dev'));
-app.use(bodyParser.json());
+app.use(bodyParser.json(),
+    // '/api-docs',
+    // swaggerUi.serve,
+    // swaggerUi.setup(swaggerDocument)
+);
 app.use(cors({
     origin: '*'
 }));
