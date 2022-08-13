@@ -33,7 +33,7 @@ class categoryService{
                 try{
                     const category = await this.categoryRepository.createNewCategory(data, transaction);
                     await transaction.commit();
-                    return res.status(200).json(responseJson.response(200, 'Success',category));
+                    return res.status(200).json(responseJson.response('success', "Success Create Category"));
                 }
                 catch(err){
                     await transaction.rollback();
@@ -65,7 +65,7 @@ class categoryService{
             try{
                 const category = await this.categoryRepository.updateCategory(data, transaction);
                 await transaction.commit();
-                return res.status(200).json(responseJson.response(200, 'Success Update',));
+                return res.status(200).json(responseJson.response('success', 'Success Update',));
             }
             catch(err){
                 await transaction.rollback();

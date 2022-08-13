@@ -65,7 +65,11 @@ class productService{
                 return res.status(400).json(responseJson.responseFail('error', Validation.error.details[0].message));
             }
             // await  this.ValidationProduct(req,res);
+            console.log(req.file.filename);
             const image = req.file.filename;
+            // if (req.file.filename == undefined){
+            //     return res.status(400).json(responseJson.responseFail('error', 'Image is required'));
+            // }
             const productDataBody = {
                 user_id: req.body.userId,
                 category_id: req.body.category_id,
@@ -101,7 +105,8 @@ class productService{
         const uploader = upload.upload.single('image');
         uploader(req, res, async(err)=> {
             const productShema = Joi.object({
-                userId : Joi.number().required(),
+                // userId : Joi.number().required(),
+                product_id : Joi.number().required(),
                 category_id : Joi.number().required(),
                 product_name : Joi.string().required(),
                 buying_price : Joi.number().required(),
