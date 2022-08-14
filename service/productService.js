@@ -151,7 +151,7 @@ class productService{
     }       
 
     // reduce stock
-    async reduceStock(req,res,next,id,stok){
+    async reduceStock(req,res,id,stok){
         let transaction = await Product.sequelize.transaction();
         try{
             const reduce = await this.productRepository.reduceStock(id, stok, transaction);

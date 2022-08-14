@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var categoryRouter = require('./routes/category');
 var productRouter = require('./routes/products');
+var transactionRouter = require('./routes/transaction');
 var cors = require('cors');
 var app = express();
 const swaggerUi = require('swagger-ui-express')
@@ -36,5 +37,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/category', categoryRouter);
 app.use('/product', productRouter);
+app.use('/transaction', transactionRouter);
 
 module.exports = app;
