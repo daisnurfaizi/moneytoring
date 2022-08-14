@@ -151,25 +151,10 @@ class productService{
     }       
 
     // reduce stock
-    async reduceStock(req,res,id,stok){
-        let transaction = await Product.sequelize.transaction();
-        try{
-            const reduce = await this.productRepository.reduceStock(id, stok, transaction);
-            if(err){
-                console.log(err);
-                return res.status(500).json({
-                    message: err.message
-                });
-            }
-            await transaction.commit();
-            return res.status(200).json(reduce);
-        }
-        catch(err){
-            await transaction.rollback();
-            return res.status(500).json({
-                message: err.message
-            });
-        }
+    async reduceStock(id,stok){
+
+            const reduce = await this.productRepository.minusStock(id, stok);
+            return reduce; 
     }
 
     getProducts(){

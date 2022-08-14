@@ -1,9 +1,16 @@
 const Transaction = require('../models');
+const TransactionDetails = require('../models');
+const TransactionDetailRepository = require('../repository/TransactionDetailRepository');
 const responseJson = require('../helper/responseJsonHelper');
-// const Product = require('../service/productService');
+const Product = require('../service/productService');
+const ProductRepository = require('../repository/productRepository');
 class transactionService{
     constructor(transactionRepository){
+        // super();
         this.transactionRepository = transactionRepository;
+        this.DetailTransaction = new TransactionDetailRepository();
+        this.productRepository = new ProductRepository();
+        this.productService = new Product(this.productRepository);
     }
 
     async createTransaction(req,res){
@@ -25,23 +32,18 @@ class transactionService{
         let transaction = await Transaction.sequelize.transaction();
         try{
             const transactionData = await this.transactionRepository.createNewTransaction(transactionDataBody, transaction);
-            // let products = transactionDataBody.products;
-            // products.forEach(async(element) => {
-            //     const transactionDetailDataBody = {
-            //         id: "TRD"+Math.floor(+new Date() / 1000),
-            //         transaction_id: transactionData.id,
-            //         product_id: element.product_id,
-            //         quantity: element.quantity,
-            //         price: element.price,
-            //         discount: element.discount,
-            //         total_price: element.total_price,
-            //     }
-            //     const transactionDetailData = await this.transactionRepository.createTransactionDetail(transactionDetailDataBody, transaction);
-            //     if(err){
-            //         throw err;
-            //     }
-            // });
-            // const reduceProduct = await Product.reduceProduct(req,res,req.body.productId, req.body.quantity);
+            let products = transactionDataBody.products;
+            products.forEach(async(element) => {
+                const transactionDetailDataBody = {
+                    transactionId: transactionData.id,
+                    productId: element.productId,
+                    buyingPrice: element.buyingPrice,
+                    sellingPrice: element.sellingPrice,
+                    quantity: element.quantity,
+                }
+                const reduceProducts = await this.productService.reduceStock(element.productId, element.quantity, transaction);
+                const DetailTransaction = await this.DetailTransaction.createTransactionDetail(transactionDetailDataBody,transaction);
+            });
             await transaction.commit();
             return res.status(200).json(responseJson.response('success', "Success Create Transaction"));
         }
