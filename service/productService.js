@@ -232,6 +232,20 @@ class productService{
         }
     }
 
+    async checkStock(id){
+        let transaction = await Product.sequelize.transaction();
+        try{
+            let checkstock = await this.productRepository.checkStock(id); 
+            return checkstock;
+         }
+        catch(err){
+            await transaction.rollback();
+            return res.status(500).json({
+                message: err.message
+            });
+        }
+    }
+
     ValidationProduct(req){
         const productShema = Joi.object({
             userId : Joi.number().required(),

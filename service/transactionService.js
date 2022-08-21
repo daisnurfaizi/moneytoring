@@ -6,7 +6,6 @@ const Product = require('../service/productService');
 const ProductRepository = require('../repository/productRepository');
 class transactionService{
     constructor(transactionRepository){
-        // super();
         this.transactionRepository = transactionRepository;
         this.DetailTransaction = new TransactionDetailRepository();
         this.productRepository = new ProductRepository();
@@ -29,17 +28,24 @@ class transactionService{
             products: req.body.products,
         }
 
-        let transaction = await Transaction.sequelize.transaction();
+        let transaction = await Transaction.sequelize.transaction({
+            autocommit: false
+        });
         try{
-            const transactionData = await this.transactionRepository.createNewTransaction(transactionDataBody, transaction);
             let products = transactionDataBody.products;
-            products.forEach(async(element) => {
+            const transactionData = await this.transactionRepository.createNewTransaction(transactionDataBody, transaction);
+             products.forEach(async(element) => {
                 const transactionDetailDataBody = {
                     transactionId: transactionData.id,
                     productId: element.productId,
                     buyingPrice: element.buyingPrice,
                     sellingPrice: element.sellingPrice,
                     quantity: element.quantity,
+                }
+                const checStock = await this.productService.checkStock(element.productId);
+                if(checStock.stock < transactionDetailDataBody.quantity){
+                    await transaction.rollback();
+                    return res.status(500).json(responseJson.responseFail(400, 'Stock '+ checStock.product_name+' is not enough',checStock));                  
                 }
                 const reduceProducts = await this.productService.reduceStock(element.productId, element.quantity, transaction);
                 const DetailTransaction = await this.DetailTransaction.createTransactionDetail(transactionDetailDataBody,transaction);
